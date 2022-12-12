@@ -6,3 +6,5 @@ CREATE TABLE things(
 );
 
 ---INSERT INTO things (body) VALUES ('Hello, backend!');
+
+-----DELETE FROM things WHERE id = 23;

@@ -7,7 +7,7 @@ module.exports.createThing = async (req, res, next) => {
         if (createdThing) {
             return res.status(201).send(createdThing);
         } else {
-            return res.status(400).send();
+            throw new ReferenceError('Reference error');
         }
     } catch(error) {
         next(error);

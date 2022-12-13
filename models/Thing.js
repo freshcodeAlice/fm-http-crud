@@ -34,38 +34,31 @@ class Thing {
       const {rows} = await this._client.query(`SELECT * FROM ${this._tableName};`);
       return rows;
     }
-    static async updateByPk(updateObj) {
-        //TODO: rewrite update method
-        
-        // const {id, updateValues} = updateObj;
-
-        // const insertValues = Object.entries(this._attributes)
-        // .filter(([attr, domain])=> attr in updateValues)
-        // .map(([attr]) => {
-
-        // });
-
-        // const insertSchemaStr = insertAttr.map(attr => `"${attr}"`).join(',');
-
-        // const insertValueStr = insertAttr.map(attr => {
-        //     const value = updateValues[attr];
-        //    return typeof value === 'string' ? `'${value}'` : value;
-        // }).join(',');
-        // // const str = `INSERT INTO ${this._tableName} (${insertSchemaStr})
-        // //                     VALUES (${insertValueStr}) RETURNING *;`
-        
 
 
+    static async updateByPk({id, updateValues}) {
 
-        // const {rows} = await this._client.query(`UPDATE ${this._tableName}
-        //                                         SET 
-        //                                         WHERE id = ${id}
-        // `);
-        // return rows;
+        const insertAttr = Object.entries(this._attributes)
+        .filter(([attr, domain])=> attr in updateValues)
+        .map(([attr]) => attr);
+    
+        const insertValueStr = insertAttr.map(attr => {
+            const value = updateValues[attr];
+           return `${attr} = ${typeof value === 'string' ? `'${value}'` : value}`
+        }).join(',');
+         const {rows} = await this._client.query(`UPDATE ${this._tableName}
+                             SET ${insertValueStr}
+                            WHERE id = ${id}
+                                RETURNING *;`);       
+        return rows;
+    
     }
 
     static async deleteByPk(pk) {
-        const {rows} = await this._client.query(`DELETE FROM ${this._tableName} WHERE id = ${pk};`);
+        const {rows} = await this._client.query(`DELETE FROM ${this._tableName} WHERE id = ${pk}
+                                                    RETURNING *;`);
         return rows;
     }
 }
+
+module.exports = Thing;

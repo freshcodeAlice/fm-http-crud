@@ -17,21 +17,19 @@ const db = {
     client
 };
 
+
 fs.readdirSync(__dirname)
-.filter(fName => /.js$/.test(fName) && fName !== currentFileName)
-.forEach(fName => {
-    const absPathToFile = path.resolve(__dirname, fName);
+   .filter(fileName => /.js$/.test(fileName) && fileName !== currentFileName)
+  .forEach(fileName => {
+    const absPathToFile = path.join(__dirname, fileName);
     const Model = require(absPathToFile);
-    Model.client = client;
+    Model._client = client;
     db[Model.name] = Model;
-})
-
-
+  });
 
 
 process.on('beforeExit', () => {
     client.end();
 })
-
 
 module.exports = db;
